@@ -7,11 +7,12 @@ from math import ceil
 
 def lin_func(x):
         return x
+#define linear causal relationship
 
 def relu_func(x):
     return np.maximum(0,x)
-
 class Data_Generation_Process():
+#define non-linear causal relationship
     
     def __init__(self,
                 beta_lower_limit,
@@ -34,14 +35,19 @@ class Data_Generation_Process():
 
         super(Data_Generation_Process, self).__init__()
     
+    #generate ER graph
     def generate_dag(self,num_nodes,edge_density,seed=None):
+        #edge_density is the probability of having a edge between any two nodes
         # Generate graph using networkx package
         G = nx.gnp_random_graph(n=num_nodes, p=edge_density, seed=seed, directed=False)
         # Convert generated graph to DAG
+        #Eg: num_nodes = 10, edge_density = 0.2, means
+        #among 10 nodes, there’s a roughly 20% chance that any two nodes will be connected to each other.
         dag = nx.DiGraph()
         dag.add_nodes_from(G)
         dag.add_edges_from([(u, v, {}) for (u, v) in G.edges() if u < v])
         assert nx.is_directed_acyclic_graph(dag)
+        #make sure we generate a directed_acyclic_graph(DAG)
         return dag
     
     def sample_beta(self,beta_lower_limit,beta_upper_limit):
